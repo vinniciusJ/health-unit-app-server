@@ -1,7 +1,9 @@
-import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards } from '@nestjs/common';
 import { HealthUnitService } from '../service/health-unit.service';
 import { HealthUnit } from '@prisma/client';
+import { AuthGuard } from 'src/guard/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('health-unit')
 export class HealthUnitController {
 	constructor(private readonly healthUnitService: HealthUnitService) {}

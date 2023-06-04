@@ -4,7 +4,6 @@ import { SignInForm, TokenDTO } from 'src/domain/sign-in';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { AuthService } from 'src/service/auth.service';
 
-
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService){}
