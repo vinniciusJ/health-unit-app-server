@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+enum TypeEnum {
+  UBS
+  UPA
+}
+
+model Address {
+  id        Int          @id @default(autoincrement())
+  street    String
+  neighborhood String
+  number    String
+  city      String
+  state     String
+  country   String
+  zipCode   String
+  healthUnit HealthUnit?
+}
+
+model Geolocation {
+  id        Int          @id @default(autoincrement())
+  lat       Float
+  long      Float
+  healthUnit HealthUnit?
+}
+
+model HealthUnit {
+  id           Int       @id @default(autoincrement())
+  name         String
+  type         TypeEnum
+  phone        String
+  openingHours String
+  address      Address   @relation(fields: [addressId], references: [id])
+  addressId    Int @unique
+  geolocation  Geolocation @relation(fields: [geolocationId], references: [id])
+  geolocationId Int @unique
+
+}
