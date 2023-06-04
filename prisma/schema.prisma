@@ -17,6 +17,11 @@ enum TypeEnum {
   UPA
 }
 
+enum UserFunctionEnum {
+  ADM 
+  USER
+}
+
 model Address {
   id        Int          @id @default(autoincrement())
   street    String
@@ -47,4 +52,12 @@ model HealthUnit {
   geolocation  Geolocation @relation(fields: [geolocationId], references: [id])
   geolocationId Int @unique
 
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  email String @unique
+  password String
 }

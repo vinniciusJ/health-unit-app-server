@@ -1,11 +1,24 @@
-import { Module } from '@nestjs/common';
-import { HealthUnitController } from './controller/health-unit.controller';
-import { HealthUnitService } from './service/health-unit.service';
+import { Module } from '@nestjs/common'
+import { AuthModule } from './module/auth.module';
+import { UsersModule } from './module/users.module';
+import { HealthUnitModule } from './module/health-unit.module';
 import { PrismaService } from './service/prisma.service';
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
-  imports: [],
-  controllers: [HealthUnitController],
-  providers: [HealthUnitService, PrismaService],
+    imports: [
+        AuthModule,
+        UsersModule,
+        HealthUnitModule,  
+        JwtModule.register({
+            global: true,
+            secret: 'health-unit-auth',
+            signOptions: {
+                expiresIn: '1h'
+            }
+        })
+    ],
+    providers: [PrismaService],
+    exports: [PrismaService]
 })
-export class AppModule {}
+export class AppModule{}
