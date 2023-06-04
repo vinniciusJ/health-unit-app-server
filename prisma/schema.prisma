@@ -17,7 +17,7 @@ enum TypeEnum {
   UPA
 }
 
-enum UserFunctionEnum {
+enum RolesEnum {
   ADM 
   USER
 }
@@ -58,7 +58,7 @@ model User{
   id Int @id @default(autoincrement())
   firstName String
   lastName String
-  function UserFunctionEnum
+  role RolesEnum
   email String @unique
   password String
 }

@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate{
 
         try{
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: 'health-unit-auth'
+                secret: process.env.JWT_TOKEN_KEY
             })
 
             request['user'] = payload

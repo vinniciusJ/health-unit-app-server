@@ -2,6 +2,8 @@ import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards } 
 import { HealthUnitService } from '../service/health-unit.service';
 import { HealthUnit } from '@prisma/client';
 import { AuthGuard } from 'src/guard/auth.guard';
+import { Roles } from '../decorators/roles.decorator'
+import { RolesGuard } from 'src/guard/roles.guard';
 
 @UseGuards(AuthGuard)
 @Controller('health-unit')
@@ -10,6 +12,8 @@ export class HealthUnitController {
 
 	@Post()
 	@HttpCode(201)
+	@Roles('ADM')
+	@UseGuards(RolesGuard)
 	async create(@Body() data: HealthUnit): Promise<HealthUnit | null> {
 		return this.healthUnitService.create(data)
 	}
@@ -28,12 +32,16 @@ export class HealthUnitController {
 
 	@Put(':id')
 	@HttpCode(204)
+	@Roles('ADM')
+	@UseGuards(RolesGuard)
 	async update(@Param('id') id: number, @Body() data: HealthUnit): Promise<HealthUnit> {
 		return this.healthUnitService.update(Number(id), data)
 	}
 
 	@Delete(':id')
 	@HttpCode(204)
+	@Roles('ADM')
+	@UseGuards(RolesGuard)
 	async delete(@Param('id') id: number): Promise<HealthUnit> {
 		return this.healthUnitService.delete(Number(id))
 	}

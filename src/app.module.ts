@@ -12,7 +12,7 @@ import { JwtModule } from '@nestjs/jwt'
         HealthUnitModule,  
         JwtModule.register({
             global: true,
-            secret: 'health-unit-auth',
+            secret: process.env.JWT_TOKEN_KEY,
             signOptions: {
                 expiresIn: '1h'
             }
