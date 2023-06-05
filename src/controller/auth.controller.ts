@@ -1,6 +1,6 @@
 import { Controller, Post, HttpCode, HttpStatus, Body, UseGuards, Request, Get } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { SignInForm, TokenDTO } from 'src/domain/sign-in';
+import {  TokenDTO } from 'src/interfaces/sign-in';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { AuthService } from 'src/service/auth.service';
 

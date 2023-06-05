@@ -51,7 +51,7 @@ model HealthUnit {
   addressId    Int @unique
   geolocation  Geolocation @relation(fields: [geolocationId], references: [id])
   geolocationId Int @unique
-
+  users        User[]
 }
 
 model User{
@@ -61,4 +61,6 @@ model User{
   role RolesEnum
   email String @unique
   password String
+  healthUnit   HealthUnit? @relation(fields: [healthUnitId], references: [id])
+  healthUnitId Int?
 }

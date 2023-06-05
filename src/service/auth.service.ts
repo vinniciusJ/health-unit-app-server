@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
-import { TokenDTO } from 'src/domain/sign-in';
+import { TokenDTO } from 'src/interfaces/sign-in';
 import { User } from '@prisma/client';
 
 
@@ -10,7 +10,7 @@ export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService){}
 
     async signIn(email: string, password: string): Promise<TokenDTO> {
-        const user = await this.usersService.findOne(email)
+        const user = await this.usersService.findOneByEmail(email)
 
         if(user.password !== password){
             throw new UnauthorizedException()

@@ -1,4 +1,4 @@
-import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards, HttpStatus } from '@nestjs/common';
 import { HealthUnitService } from '../service/health-unit.service';
 import { HealthUnit } from '@prisma/client';
 import { AuthGuard } from 'src/guard/auth.guard';
@@ -11,7 +11,7 @@ export class HealthUnitController {
 	constructor(private readonly healthUnitService: HealthUnitService) {}
 
 	@Post()
-	@HttpCode(201)
+	@HttpCode(HttpStatus.CREATED)
 	@Roles('ADM')
 	@UseGuards(RolesGuard)
 	async create(@Body() data: HealthUnit): Promise<HealthUnit | null> {
@@ -19,19 +19,19 @@ export class HealthUnitController {
 	}
 
 	@Get()
-	@HttpCode(200)
+	@HttpCode(HttpStatus.OK)
 	async findAll(): Promise<HealthUnit[]> {
 		return this.healthUnitService.findALl()
 	}
 
 	@Get(':id')
-	@HttpCode(200)
+	@HttpCode(HttpStatus.OK)
 	async findByID(@Param('id') id: number): Promise<HealthUnit> {
 		return this.healthUnitService.findById(Number(id))
 	}
 
 	@Put(':id')
-	@HttpCode(204)
+	@HttpCode(HttpStatus.NO_CONTENT)
 	@Roles('ADM')
 	@UseGuards(RolesGuard)
 	async update(@Param('id') id: number, @Body() data: HealthUnit): Promise<HealthUnit> {
@@ -39,7 +39,7 @@ export class HealthUnitController {
 	}
 
 	@Delete(':id')
-	@HttpCode(204)
+	@HttpCode(HttpStatus.NO_CONTENT)
 	@Roles('ADM')
 	@UseGuards(RolesGuard)
 	async delete(@Param('id') id: number): Promise<HealthUnit> {
