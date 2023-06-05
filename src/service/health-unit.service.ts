@@ -1,8 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Geolocation } from '@prisma/client';
+import { Geolocation, TypeEnum } from '@prisma/client';
 import { filterByRadius } from 'src/utils/filter-by-radius';
 import { HealthUnit } from 'src/domain/health-unit';
+
+const INCLUDE_OPTIONS = {
+	include: {
+		address: true,
+		geolocation: true
+	}
+}
 
 @Injectable()
 export class HealthUnitService {
@@ -19,22 +26,35 @@ export class HealthUnitService {
 					create: data.geolocation
 				}
 			},
-			include: { address: true, geolocation: true }
+			...INCLUDE_OPTIONS
 		})
 	}
 
 	async findClosests(point: Geolocation, radius: number): Promise<HealthUnit[]> {
-		const healthUnities = await this.prisma.healthUnit.findMany({ include: { geolocation: true, address: true } }) as HealthUnit[]
+		const healthUnities = await this.prisma.healthUnit.findMany({...INCLUDE_OPTIONS}) as HealthUnit[]
 
 		return filterByRadius(healthUnities, point, radius)
 	}
 
+	async filter(query: string = '', type?: TypeEnum): Promise<HealthUnit[]> {
+		return await this.prisma.healthUnit.findMany({
+			where: {
+				OR: [
+					{ name: { startsWith: query } },
+					{ address: { street: { startsWith: query } } }
+				],
+				...(type && { type })
+			},
+			...INCLUDE_OPTIONS
+		}) as HealthUnit[]
+	}
+
 	async findALl(): Promise<HealthUnit[]> {
-		return await this.prisma.healthUnit.findMany({ include: { address: true, geolocation: true } })
+		return await this.prisma.healthUnit.findMany({ ...INCLUDE_OPTIONS })
 	}
 
 	async findById(id: number): Promise<HealthUnit> {
-		return await this.prisma.healthUnit.findUnique({ where: { id }, include: { address: true, geolocation: true } })
+		return await this.prisma.healthUnit.findUnique({ where: { id }, ...INCLUDE_OPTIONS })
 	}
 
 	async update(id: number, data): Promise<HealthUnit> {

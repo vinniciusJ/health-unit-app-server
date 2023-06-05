@@ -12,6 +12,10 @@ export class AuthService {
     async signIn(email: string, password: string): Promise<TokenDTO> {
         const user = await this.usersService.findOneByEmail(email)
 
+        if(!user){
+            throw new UnauthorizedException()
+        }
+
         if(user.password !== password){
             throw new UnauthorizedException()
         }

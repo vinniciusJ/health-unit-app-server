@@ -1,6 +1,6 @@
 import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards, HttpStatus, Query } from '@nestjs/common';
 import { HealthUnitService } from '../service/health-unit.service';
-import { Geolocation } from '@prisma/client';
+import { Geolocation, TypeEnum } from '@prisma/client';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { Roles } from '../decorators/roles.decorator'
 import { RolesGuard } from 'src/guard/roles.guard';
@@ -31,6 +31,12 @@ export class HealthUnitController {
 		return this.healthUnitService.findClosests(point, Number(radius))
 	}
 
+	@Get('filter?')
+	@HttpCode(HttpStatus.OK)
+	filter(@Query('query') query: string, @Query('type') type: TypeEnum): Promise<HealthUnit[]> {
+		return this.healthUnitService.filter(query, type)
+	}
+
 	@Get(':id')
 	@HttpCode(HttpStatus.OK)
 	findByID(@Param('id') id: number): Promise<HealthUnit> {
@@ -38,16 +44,16 @@ export class HealthUnitController {
 	}
 
 	@Put(':id')
-	@HttpCode(HttpStatus.NO_CONTENT)
 	@Roles('ADM')
+	@HttpCode(HttpStatus.NO_CONTENT)
 	@UseGuards(RolesGuard)
 	update(@Param('id') id: number, @Body() data: HealthUnit): Promise<HealthUnit> {
 		return this.healthUnitService.update(Number(id), data)
 	}
 
+	@Roles('ADM')
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	@Roles('ADM')
 	@UseGuards(RolesGuard)
 	delete(@Param('id') id: number): Promise<HealthUnit> {
 		return this.healthUnitService.delete(Number(id))
