@@ -1,9 +1,10 @@
-import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards, HttpStatus } from '@nestjs/common';
+import { Controller, Post, HttpCode, Body, Get, Put, Param, Delete, UseGuards, HttpStatus, Query } from '@nestjs/common';
 import { HealthUnitService } from '../service/health-unit.service';
-import { HealthUnit } from '@prisma/client';
+import { Geolocation } from '@prisma/client';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { Roles } from '../decorators/roles.decorator'
 import { RolesGuard } from 'src/guard/roles.guard';
+import { HealthUnit } from 'src/domain/health-unit';
 
 @UseGuards(AuthGuard)
 @Controller('health-unit')
@@ -14,19 +15,25 @@ export class HealthUnitController {
 	@HttpCode(HttpStatus.CREATED)
 	@Roles('ADM')
 	@UseGuards(RolesGuard)
-	async create(@Body() data: HealthUnit): Promise<HealthUnit | null> {
+	create(@Body() data: HealthUnit): Promise<HealthUnit | null> {
 		return this.healthUnitService.create(data)
 	}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async findAll(): Promise<HealthUnit[]> {
+	findAll(): Promise<HealthUnit[]> {
 		return this.healthUnitService.findALl()
+	}
+
+	@Get('closests?')
+	@HttpCode(HttpStatus.OK)
+	findClosests(@Body() point: Geolocation, @Query('radius') radius: number): Promise<HealthUnit[]> {
+		return this.healthUnitService.findClosests(point, Number(radius))
 	}
 
 	@Get(':id')
 	@HttpCode(HttpStatus.OK)
-	async findByID(@Param('id') id: number): Promise<HealthUnit> {
+	findByID(@Param('id') id: number): Promise<HealthUnit> {
 		return this.healthUnitService.findById(Number(id))
 	}
 
@@ -34,7 +41,7 @@ export class HealthUnitController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@Roles('ADM')
 	@UseGuards(RolesGuard)
-	async update(@Param('id') id: number, @Body() data: HealthUnit): Promise<HealthUnit> {
+	update(@Param('id') id: number, @Body() data: HealthUnit): Promise<HealthUnit> {
 		return this.healthUnitService.update(Number(id), data)
 	}
 
@@ -42,7 +49,7 @@ export class HealthUnitController {
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@Roles('ADM')
 	@UseGuards(RolesGuard)
-	async delete(@Param('id') id: number): Promise<HealthUnit> {
+	delete(@Param('id') id: number): Promise<HealthUnit> {
 		return this.healthUnitService.delete(Number(id))
 	}
 	

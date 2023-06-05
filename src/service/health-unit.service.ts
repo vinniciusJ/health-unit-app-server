@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { HealthUnit } from '@prisma/client';
+import { Geolocation } from '@prisma/client';
+import { filterByRadius } from 'src/utils/filter-by-radius';
+import { HealthUnit } from 'src/domain/health-unit';
 
 @Injectable()
 export class HealthUnitService {
@@ -19,6 +21,12 @@ export class HealthUnitService {
 			},
 			include: { address: true, geolocation: true }
 		})
+	}
+
+	async findClosests(point: Geolocation, radius: number): Promise<HealthUnit[]> {
+		const healthUnities = await this.prisma.healthUnit.findMany({ include: { geolocation: true, address: true } }) as HealthUnit[]
+
+		return filterByRadius(healthUnities, point, radius)
 	}
 
 	async findALl(): Promise<HealthUnit[]> {
@@ -41,12 +49,12 @@ export class HealthUnitService {
 				}
 			}, 
 			where: { id } 
-		})
+		}) as HealthUnit
 	}
 
-	async delete(id: number){
+	async delete(id: number): Promise<HealthUnit> {
 		return await this.prisma.healthUnit.delete({ 
 			where: { id },
-		})
+		}) as HealthUnit
 	}
 }

@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
-import { TokenDTO } from 'src/interfaces/sign-in';
+import { TokenDTO } from 'src/domain/sign-in';
 import { User } from '@prisma/client';
 
 
