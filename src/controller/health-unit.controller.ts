@@ -6,7 +6,7 @@ import { Roles } from '../decorators/roles.decorator'
 import { RolesGuard } from 'src/guard/roles.guard';
 import { HealthUnit } from 'src/domain/health-unit';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('health-unit')
 export class HealthUnitController {
 	constructor(private readonly healthUnitService: HealthUnitService) {}
@@ -27,8 +27,8 @@ export class HealthUnitController {
 
 	@Get('closests?')
 	@HttpCode(HttpStatus.OK)
-	findClosests(@Body() point: Geolocation, @Query('radius') radius: number): Promise<HealthUnit[]> {
-		return this.healthUnitService.findClosests(point, Number(radius))
+	findClosests(@Query('lat') lat: string, @Query('long') long: string, @Query('radius') radius: number): Promise<HealthUnit[]> {
+		return this.healthUnitService.findClosests(Number(lat), Number(long), Number(radius))
 	}
 
 	@Get('filter?')

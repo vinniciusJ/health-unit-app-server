@@ -1,4 +1,4 @@
-import { Geolocation } from "@prisma/client";
+import { Geolocation } from "src/domain/gelocation";
 
 const EARTH_RADIUS_KM = 6371
 

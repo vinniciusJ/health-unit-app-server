@@ -30,18 +30,29 @@ export class HealthUnitService {
 		})
 	}
 
-	async findClosests(point: Geolocation, radius: number): Promise<HealthUnit[]> {
+	async findClosests(lat: number, long: number, radius: number): Promise<HealthUnit[]> {
 		const healthUnities = await this.prisma.healthUnit.findMany({...INCLUDE_OPTIONS}) as HealthUnit[]
 
-		return filterByRadius(healthUnities, point, radius)
+		return filterByRadius(healthUnities, { lat, long }, radius)
 	}
 
 	async filter(query: string = '', type?: TypeEnum): Promise<HealthUnit[]> {
 		return await this.prisma.healthUnit.findMany({
 			where: {
 				OR: [
-					{ name: { startsWith: query } },
-					{ address: { street: { startsWith: query } } }
+					{ name: { contains: query } },
+					{ address: {
+						OR: [
+							{ street: { contains: query } },
+							{ number: { contains: query } },
+							{ neighborhood: { contains: query } },
+							{ city: { contains: query } },
+							{ state: { contains: query } },
+							{ country: { contains: query } },
+							{ zipCode: { contains: query } }
+						]
+					} }
+					
 				],
 				...(type && { type })
 			},

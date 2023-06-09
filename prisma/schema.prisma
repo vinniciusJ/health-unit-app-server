@@ -47,6 +47,7 @@ model HealthUnit {
   type         TypeEnum
   phone        String
   openingHours String
+  imageURL     String
   address      Address   @relation(fields: [addressId], references: [id])
   addressId    Int @unique
   geolocation  Geolocation @relation(fields: [geolocationId], references: [id])
